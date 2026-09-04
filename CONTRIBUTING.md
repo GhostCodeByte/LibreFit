@@ -189,13 +189,8 @@ the latest Android toolkit:
 
 ### Translations
 
-> [!CAUTION]
-> All Weblate translators who **logged in with GitHub**, can just receive code just as Contributors
-> by logging in here: https://librefit.org/donate.
->
-> If that is not the case, unfortunately, there isn't the automatic reward system for translators
-> yet! To get the supporter code, send a message by visiting contact
-> page: https://librefit.org/contact.
+> [!IMPORTANT]
+> To get the supporter code as Weblate translator, follow procedure in the bottom of the following page: https://librefit.org/donate.
 
 We want LibreFit to be accessible to everyone!
 
