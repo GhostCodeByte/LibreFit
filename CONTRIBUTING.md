@@ -190,7 +190,7 @@ the latest Android toolkit:
 ### Translations
 
 > [!IMPORTANT]
-> To get the supporter code as Weblate translator, follow procedure in the bottom of the following page: https://librefit.org/donate.
+> To get the supporter code as Weblate translator, follow procedure in the following page: https://librefit.org/translators/login.
 
 We want LibreFit to be accessible to everyone!
 
