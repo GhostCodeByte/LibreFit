@@ -7,9 +7,9 @@
   -->
 
 <resources>
-    <string name="app_name">LibreFit</string>
-    <string name="app_name_first_part">Libre</string>
-    <string name="app_name_second_part">Fit</string>
+    <string name="app_name" translatable="false">LibreFit</string>
+    <string name="app_name_first_part" translatable="false">Libre</string>
+    <string name="app_name_second_part" translatable="false">Fit</string>
 
     <!--Navigation-->
     <string name="home">Home</string>
@@ -402,7 +402,7 @@
     <string name="to_verify">To verify</string>
     <string name="verify_code">Verify code</string>
     <string name="code_desc">Paste the code and click the button below.</string>
-    <string name="verify_companion_or_code">Verify or the companion app or the code.</string>
+    <string name="verify_companion_or_code">Verify the companion app or the code.</string>
     <string name="exercise_saved">Exercise saved</string>
 
     <string name="valid_companion_app_signature">Valid companion app</string>
