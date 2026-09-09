@@ -69,4 +69,5 @@
     <string name="add_set">वर्कआउट सेट जोड़ें</string>
     <string name="warning_delete_exercise_from_routine">सावधान! पहले से मौजूद रूटीन से एक्सरसाइज़ हटाने पर, उस रूटीन से जुड़े वर्कआउट की सभी एक्सरसाइज़ का लिंक टूट जाएगा।</string>
     <string name="report_github">गिटहब पर रिपोर्ट करें</string>
+    <string name="quit_adding_exercises_question">क्या आप अपनी एक्सरसाइज़ में नई एक्सरसाइज़ जोड़ना बंद कर रहे हैं?</string>
 </resources>
