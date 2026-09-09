@@ -36,6 +36,12 @@ import org.librefit.util.Formatter
 import java.time.LocalDateTime
 import javax.inject.Inject
 
+/**
+ * Default body weight (in kilograms) used to pre-fill the new-measurement card when no valid
+ * saved weight exists.
+ */
+private const val DEFAULT_BODY_WEIGHT_KG = 60.0
+
 @HiltViewModel
 class MeasurementScreenViewModel @Inject constructor(
     private val measurementRepository: MeasurementRepository,
@@ -168,11 +174,22 @@ class MeasurementScreenViewModel @Inject constructor(
     }
 
 
+    /**
+     * The measurement currently backing the add/edit card.
+     *
+     * In [MeasurementCardState.EDIT] it resolves the measurement with the selected
+     * [Measurement.id], falling back to a default one when it cannot be found; in
+     * [MeasurementCardState.NEW] it pre-fills the card with the last saved body weight,
+     * or [DEFAULT_BODY_WEIGHT_KG] when no valid measurement exists.
+     */
     private val currentMeasurement: StateFlow<Measurement> =
         combine(idMeasurement, measurements, measurementCardState) { id, m, mcs ->
-            if (mcs == MeasurementCardState.EDIT) {
-                m.find { it.id == id } ?: Measurement()
-            } else Measurement()
+            when (mcs) {
+                MeasurementCardState.EDIT -> m.find { it.id == id } ?: Measurement()
+                MeasurementCardState.NEW -> Measurement(
+                    bodyWeight = m.lastSavedBodyWeight() ?: Weight.kilograms(DEFAULT_BODY_WEIGHT_KG)
+                )
+            }
         }
             .distinctUntilChanged()
             .stateIn(
@@ -221,3 +238,13 @@ class MeasurementScreenViewModel @Inject constructor(
         }
     }
 }
+
+/**
+ * Returns the body weight of the most recently recorded measurement (by [Measurement.date]),
+ * or `null` when no measurement with a valid (non-zero) weight exists.
+ *
+ * Zero-weight entries are ignored so degenerate rows cannot pre-fill the form with a value
+ * that would keep the save action disabled.
+ */
+private fun List<Measurement>.lastSavedBodyWeight(): Weight? =
+    maxByOrNull { it.date }?.bodyWeight?.takeIf { it.inKilograms != 0.0 }
