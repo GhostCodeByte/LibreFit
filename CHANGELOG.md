@@ -9,6 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Auto-fill weight inputs with the last saved measurement (defaults to 60 kg) [#164](https://github.com/LibreFitOrg/LibreFit/issues/164)
+
+### Changed
+
+- Modernize bottom navigation bar to Material Design 3 Expressive [#172](https://github.com/LibreFitOrg/LibreFit/pull/172)
+
+### Deprecated
+
+-
+
+### Removed
+
+-
+
+### Fixed
+
+- Crash when switching to chinese languange [#154](https://github.com/LibreFitOrg/LibreFit/issues/154)
+- Weight display issue in exercise details screen [#176](https://github.com/LibreFitOrg/LibreFit/pull/176)
+
+## [0.4.1] - 2026-07-28
+
+This release contains fix for a bug noticed shortly after release v0.4.0. The bug was only visual so no data was affected.
+
+### Fixed
+
+- Visual bug in previous set of workout screen [#140](https://github.com/LibreFitOrg/LibreFit/pull/140)
+
+## [0.4.0] - 2026-07-26
+
+### Added
+
 - Support for imperial system (pounds) [#18](https://github.com/LibreFitOrg/LibreFit/issues/18)
 - Russian 🇷🇺 [#124](https://github.com/LibreFitOrg/LibreFit/pull/124)
 - Add 5 new exercises [#111](https://github.com/LibreFitOrg/LibreFit/pull/111):
@@ -21,14 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - A new toggle to show images was introduced (off by default). [#29](https://github.com/LibreFitOrg/LibreFit/issues/29)
-
-### Deprecated
-
--
-
-### Removed
-
--
+- Quicker input for weights with scroll wheel [#74](https://github.com/LibreFitOrg/LibreFit/issues/74)
 
 ### Fixed
 
@@ -108,7 +132,11 @@ Thank you for your support!
 
 First public release. Bugs are expected! Report them so they can be fixed.
 
-[Unreleased]: https://github.com/LibreFitOrg/LibreFit/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/LibreFitOrg/LibreFit/compare/v0.4.1...HEAD
+
+[0.4.1]: https://github.com/LibreFitOrg/LibreFit/compare/v0.4.0...v0.4.1
+
+[0.4.0]: https://github.com/LibreFitOrg/LibreFit/compare/v0.3.1...v0.4.0
 
 [0.3.1]: https://github.com/LibreFitOrg/LibreFit/compare/v0.3.0...v0.3.1
 

@@ -157,6 +157,23 @@ class MeasurementScreenViewModelTest {
     }
 
     @Test
+    fun `initial state - body weight defaults to 60 kg when there are no measurements`() = runTest {
+        assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(60.0))
+    }
+
+    @Test
+    fun `initial state - body weight is seeded with the latest measurement by date`() = runTest {
+        // Arrange: the latest measurement by date is NOT the first element of the list
+        measurementsFlow.value = listOf(
+            Measurement(id = 1, bodyWeight = Weight.kilograms(70.0), date = now.minusDays(14)),
+            Measurement(id = 2, bodyWeight = Weight.kilograms(90.0), date = now)
+        )
+
+        // Assert: the seeding follows the measurement date, not the list order
+        assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(90.0))
+    }
+
+    @Test
     fun `initial state - measurement card state is new `() = runTest {
         assertThat(viewModel.measurementCardState.value).isEqualTo(MeasurementCardState.NEW)
     }
@@ -375,5 +392,72 @@ class MeasurementScreenViewModelTest {
             // Assert: NO new measurement is emitted by the flow (because the id in invalid and nothing changes)
             expectNoEvents()
         }
+    }
+
+    @Test
+    fun `when measurements are loaded - body weight seeds with the most recent weight`() = runTest {
+        // Arrange: Provide measurements from the repository
+        measurementsFlow.value = allMeasurements
+
+        // Assert: The card should be pre-filled with the most recent weight (id = 1, 90 kg)
+        assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(90.0))
+    }
+
+    @Test
+    fun `when a new measurement is inserted - body weight re-seeds with the new last saved weight`() =
+        runTest {
+            // Arrange: Set the initial value for the flow.
+            measurementsFlow.value = allMeasurements
+            assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(90.0))
+
+            // Act: A new measurement with a more recent date becomes the last saved weight
+            measurementsFlow.value = allMeasurements +
+                Measurement(id = 4, bodyWeight = Weight.kilograms(95.0), date = now.plusDays(1))
+
+            // Assert: The card re-seeds with the new last saved weight
+            assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(95.0))
+        }
+
+    @Test
+    fun `when the latest measurement has zero body weight - body weight falls back to the 60 kg default`() =
+        runTest {
+            // Arrange: The most recent measurement has a degenerate zero weight
+            measurementsFlow.value = listOf(
+                Measurement(id = 1, bodyWeight = Weight.zero()),
+                Measurement(id = 2, bodyWeight = Weight.kilograms(88.0), date = now.minusDays(7))
+            )
+
+            // Assert: Zero-weight entries are ignored and the default is used instead
+            assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(60.0))
+        }
+
+    @Test
+    fun `when editing a measurement - body weight shows the edited measurement's weight`() =
+        runTest {
+            // Arrange: Set the initial value for the flow.
+            measurementsFlow.value = allMeasurements
+
+            // Act: Start editing the measurement with id = 2 (88 kg)
+            viewModel.updateMeasurementCardState(MeasurementCardState.EDIT)
+            viewModel.updateIdMeasurement(2L)
+
+            // Assert: The card shows the edited measurement's weight, not the last saved one
+            assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(88.0))
+        }
+
+    @Test
+    fun `when the edit is cancelled - body weight re-seeds with the last saved weight`() = runTest {
+        // Arrange: Set the initial value for the flow and start editing the id = 2 measurement.
+        measurementsFlow.value = allMeasurements
+        viewModel.updateMeasurementCardState(MeasurementCardState.EDIT)
+        viewModel.updateIdMeasurement(2L)
+        assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(88.0))
+
+        // Act: Cancel the edit (the UI resets the id and returns to the NEW card state)
+        viewModel.updateIdMeasurement(0L)
+        viewModel.updateMeasurementCardState(MeasurementCardState.NEW)
+
+        // Assert: The card re-seeds with the last saved weight (id = 1, 90 kg)
+        assertThat(viewModel.bodyWeight.value).isEqualTo(Weight.kilograms(90.0))
     }
 }

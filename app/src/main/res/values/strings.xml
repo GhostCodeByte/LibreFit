@@ -7,7 +7,9 @@
   -->
 
 <resources>
-    <string name="app_name">LibreFit</string>
+    <string name="app_name" translatable="false">LibreFit</string>
+    <string name="app_name_first_part" translatable="false">Libre</string>
+    <string name="app_name_second_part" translatable="false">Fit</string>
 
     <!--Navigation-->
     <string name="home">Home</string>
@@ -123,6 +125,29 @@
     <string name="url_T_Silverspoon" translatable="false">https://github.com/T-Silverspoon</string>
     <string name="ByYeah" translatable="false">ByYeah</string>
     <string name="url_ByYeah" translatable="false">https://github.com/ByYeah</string>
+    <string name="VanemKrAu" translatable="false">VanemKrAu</string>
+    <string name="url_VanemKrAu" translatable="false">https://github.com/VanemKrAu</string>
+    <string name="UbioZur" translatable="false">UbioZur</string>
+    <string name="url_UbioZur" translatable="false">https://github.com/UbioZur</string>
+    <string name="malespiaut" translatable="false">malespiaut</string>
+    <string name="url_malespiaut" translatable="false">https://github.com/malespiaut</string>
+    <string name="zhx000" translatable="false">zhx000</string>
+    <string name="url_zhx000" translatable="false">https://github.com/zhx000</string>
+    <string name="Miles_Espadoto" translatable="false">Miles Espadoto</string>
+    <string name="vinitdrk" translatable="false">vinitdrk</string>
+    <string name="url_vinitdrk" translatable="false">https://github.com/vinitdrk</string>
+    <string name="Jahn_Andreas" translatable="false">Jahn Andreas</string>
+    <string name="hyperion51" translatable="false">hyperion</string>
+    <string name="url_hyperion51" translatable="false">https://github.com/hyperioncodes</string>
+    <string name="joncasagrande" translatable="false">joncasagrande</string>
+    <string name="url_joncasagrande" translatable="false">https://github.com/joncasagrande</string>
+    <string name="lotation" translatable="false">lotation</string>
+    <string name="url_lotation" translatable="false">https://github.com/lotation</string>
+    <string name="WinnerWind" translatable="false">WinnerWind</string>
+    <string name="url_WinnerWind" translatable="false">https://github.com/WinnerWind</string>
+    <string name="Rajesh_Ranmara" translatable="false">Rajesh Ranmara</string>
+    <string name="alexis_charp" translatable="false">alexischarp</string>
+    <string name="url_alexis_charp" translatable="false">https://github.com/alexischarp</string>
 
 
     <!--Before saving screen-->
@@ -380,6 +405,8 @@
     <string name="language_korean">Korean</string>
     <string name="language_swedish_nt" translatable="false">Svenska</string>
     <string name="language_swedish">Swedish</string>
+    <string name="language_portuguese_nt" translatable="false">Português</string>
+    <string name="language_portuguese">Portuguese</string>
 
     <!-- Statistics screen-->
     <string name="past">Past</string>
@@ -411,7 +438,7 @@
     <string name="to_verify">To verify</string>
     <string name="verify_code">Verify code</string>
     <string name="code_desc">Paste the code and click the button below.</string>
-    <string name="verify_companion_or_code">Verify or the companion app or the code.</string>
+    <string name="verify_companion_or_code">Verify the companion app or the code.</string>
     <string name="exercise_saved">Exercise saved</string>
 
     <string name="valid_companion_app_signature">Valid companion app</string>
