@@ -123,6 +123,7 @@ import org.librefit.ui.models.UiSet
 import org.librefit.ui.models.UiWorkout
 import org.librefit.ui.models.UiWorkoutWithExercisesAndSets
 import org.librefit.ui.models.autoUnitSuffix
+import org.librefit.ui.models.doubleValueAsString
 import org.librefit.ui.theme.LibreFitTheme
 import org.librefit.util.Formatter
 import org.librefit.util.Formatter.formatDetails
@@ -752,7 +753,10 @@ private fun SharedTransitionScope.HistoryPage(
                                                 } else {
                                                     Text(text="${set.reps}", color=contentColor)
                                                     if (setMode == SetMode.LOAD || setMode == SetMode.BODYWEIGHT_WITH_LOAD) {
-                                                        Text(text = "${set.load}", color = contentColor)
+                                                        Text(
+                                                            text = set.load.doubleValueAsString(),
+                                                            color = contentColor
+                                                        )
                                                     }
                                                 }
                                                 Checkbox(
