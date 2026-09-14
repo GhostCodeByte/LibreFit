@@ -19,6 +19,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuGroup
@@ -44,6 +46,7 @@ import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExposedDropdownMenu
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -54,6 +57,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
@@ -61,6 +65,7 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -100,9 +105,11 @@ import org.librefit.R
 import org.librefit.enums.InfoMode
 import org.librefit.enums.PreviousPerformanceSet
 import org.librefit.enums.SetMode
+import org.librefit.enums.exercise.Equipment
 import org.librefit.enums.userPreferences.ThemeMode
 import org.librefit.models.Weight
 import org.librefit.nav.LocalUnitSystem
+import org.librefit.ui.components.modalBottomSheets.BarbellCalculatorModalBottomSheet
 import org.librefit.ui.components.modalBottomSheets.InputModalBottomSheet
 import org.librefit.ui.models.InputModalBottomSheetState
 import org.librefit.ui.models.UiExercise
@@ -198,6 +205,7 @@ fun SharedTransitionScope.ExerciseCard(
     useScrollWheelForInput: Boolean,
     dismissScrollWheelInputAutomatically: Boolean,
     showExercisesImages: Boolean?,
+    defaultBarWeight: Double?,
     onReorderRequest: () -> Unit,
     deleteSet: (Long) -> Unit,
     updateExerciseNotes: (String, Long) -> Unit,
@@ -209,7 +217,8 @@ fun SharedTransitionScope.ExerciseCard(
     updateSetCompleted: (Boolean, Long) -> Unit,
     showInfo: (InfoMode) -> Unit,
     updateIdSetWithRunningStopwatch: (Long?) -> Unit = {},
-    applyPreviousSetPerformance: (Long) -> Unit = {}
+    applyPreviousSetPerformance: (Long) -> Unit = {},
+    saveDefaultBarWeight: (Double) -> Unit,
 ) {
     val unit = autoUnitSuffix()
 
@@ -395,7 +404,12 @@ fun SharedTransitionScope.ExerciseCard(
                         }
                         AnimatedVisibility(visible = showSlider) {
                             Slider(
-                                value = restTime.toFloat(),
+                                state = rememberSliderState(
+                                    value = restTime.toFloat(),
+                                    trackRange = 0f..300f,
+                                    // 19 steps means values multiple of 5
+                                    steps = 19
+                                ),
                                 onValueChange = {
                                     // By dividing first and then multiplying by 5, it rounds to the closest number multiple of 5
                                     restTime = (it / 5).roundToInt() * 5
@@ -406,10 +420,7 @@ fun SharedTransitionScope.ExerciseCard(
                                         restTime,
                                         exerciseWithSets.exercise.id
                                     )
-                                },
-                                valueRange = 0f..300f,
-                                // 19 steps means values multiple of 5
-                                steps = 19
+                                }
                             )
                         }
                     }
@@ -580,13 +591,72 @@ fun SharedTransitionScope.ExerciseCard(
                         }
                     }
 
-                    //Add set button
-                    LibreFitButton(
-                        text = stringResource(id = R.string.add_set),
-                        icon = painterResource(R.drawable.ic_add_circle),
-                        onClick = { addSet(exerciseWithSets.exercise.id) },
-                        elevated = false
-                    )
+                    //Add set button + barbell calculator (if exercise requires barbell)
+
+                    if (exerciseWithSets.exerciseDC.equipment != Equipment.BARBELL) {
+                        LibreFitButton(
+                            text = stringResource(id = R.string.add_set),
+                            icon = painterResource(R.drawable.ic_add_circle),
+                            onClick = { addSet(exerciseWithSets.exercise.id) },
+                            elevated = false
+                        )
+                    } else {
+                        var showBarbellCalculator by rememberSaveable { mutableStateOf(false) }
+
+                        if (showBarbellCalculator) {
+                            val lastSet = exerciseWithSets.sets.lastOrNull { !it.completed }
+                                ?: exerciseWithSets.sets.lastOrNull()
+
+                            BarbellCalculatorModalBottomSheet(
+                                initialTargetWeight = lastSet?.load ?: Weight.auto(50.0),
+                                defaultBarWeight = defaultBarWeight,
+                                onSaveDefaultBarWeight = saveDefaultBarWeight
+                            ) {
+                                showBarbellCalculator = false
+                            }
+                        }
+
+                        val interactionSources = remember { List(2) { MutableInteractionSource() } }
+                        ButtonGroup(
+                            overflowIndicator = {}
+                        ) {
+                            customItem(
+                                buttonGroupContent = {
+                                    OutlinedIconButton(
+                                        onClick = {
+                                            showBarbellCalculator = true
+                                        },
+                                        shapes = IconButtonDefaults.shapes(),
+                                        interactionSource = interactionSources[0],
+                                        modifier = Modifier.animateWidth(interactionSources[0])
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_barbell),
+                                            contentDescription = stringResource(R.string.barbell_calculator)
+                                        )
+                                    }
+                                },
+                                menuContent = {}
+                            )
+                            customItem(
+                                buttonGroupContent = {
+                                    LibreFitButton(
+                                        text = stringResource(id = R.string.add_set),
+                                        icon = painterResource(R.drawable.ic_add_circle),
+                                        onClick = { addSet(exerciseWithSets.exercise.id) },
+                                        elevated = false,
+                                        interactionSource = interactionSources[1],
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .animateWidth(interactionSources[1])
+                                    )
+                                },
+                                menuContent = {}
+                            )
+                        }
+                    }
+
+
                 }
             }
         }
@@ -985,7 +1055,8 @@ private fun ExerciseCardPreview() {
                 sets = persistentListOf(UiSet(completed = true), UiSet(elapsedTime = 100)),
                 exerciseDC = UiExerciseDC(
                     name = "Exercise name",
-                    images = persistentListOf("3_4_Sit-Up/0.jpg")
+                    images = persistentListOf("3_4_Sit-Up/0.jpg"),
+                    equipment = Equipment.BARBELL
                 )
             )
         )
@@ -1031,6 +1102,7 @@ private fun ExerciseCardPreview() {
                     useScrollWheelForInput = false,
                     dismissScrollWheelInputAutomatically = false,
                     showExercisesImages = false,
+                    defaultBarWeight = null,
                     updateExerciseNotes = { notes, _ ->
                         e.value = e.value.copy(exercise = e.value.exercise.copy(notes = notes))
                     },
@@ -1090,6 +1162,7 @@ private fun ExerciseCardPreview() {
                         }
                     },
                     onReorderRequest = {},
+                    saveDefaultBarWeight = {},
                 )
             }
         }

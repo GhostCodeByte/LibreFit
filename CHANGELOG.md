@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- French 🇫🇷 [#180](https://github.com/LibreFitOrg/LibreFit/pull/180)
+- New buttons to speed up scroll wheel input [#181](https://github.com/LibreFitOrg/LibreFit/pull/181)
+- Barbell plate calculator based on target weight [#15](https://github.com/LibreFitOrg/LibreFit/issues/15)
 - Auto-fill weight inputs with the last saved measurement (defaults to 60 kg) [#164](https://github.com/LibreFitOrg/LibreFit/issues/164)
 
 ### Changed
@@ -27,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Crash when switching to chinese languange [#154](https://github.com/LibreFitOrg/LibreFit/issues/154)
 - Weight display issue in exercise details screen [#176](https://github.com/LibreFitOrg/LibreFit/pull/176)
+- Edge to edge display implementation [#100](https://github.com/LibreFitOrg/LibreFit/issues/100)
 
 ## [0.4.1] - 2026-07-28
 

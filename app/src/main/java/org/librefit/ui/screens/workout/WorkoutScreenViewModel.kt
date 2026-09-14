@@ -218,10 +218,6 @@ class WorkoutScreenViewModel @Inject constructor(
     // A Job to hold the running set's stopwatch coroutine
     private var stopwatchJob: Job? = null
 
-    override fun onCleared() {
-        stopwatchJob?.cancel()
-    }
-
     init {
         viewModelScope.launch {
             if (workoutId != 0L) {
@@ -627,4 +623,12 @@ class WorkoutScreenViewModel @Inject constructor(
     val dismissScrollWheelInputAutomatically = userPreferences.dismissScrollWheelInputAutomatically
 
     val displayExercisesImages = userPreferences.showExercisesImages
+
+    val defaultBarWeight = userPreferences.defaultBarWeight
+
+    fun saveDefaultBarWeight(value: Double) {
+        viewModelScope.launch {
+            userPreferences.saveDefaultBarWeight(value)
+        }
+    }
 }

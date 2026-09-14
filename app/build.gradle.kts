@@ -21,7 +21,13 @@ plugins {
 
 android {
     namespace = "org.librefit"
-    compileSdk = 37
+
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
+
 
     buildFeatures {
         buildConfig = true
@@ -49,7 +55,7 @@ android {
         androidResources {
             generateLocaleConfig = true
             localeFilters += setOf(
-                "en", "it", "de", "nl", "es", "cs", "zh-rCN", "pt-rBR", "ru"
+                "en", "it", "de", "nl", "es", "cs", "zh-rCN", "pt-rBR", "ru", "fr"
             )
         }
 
